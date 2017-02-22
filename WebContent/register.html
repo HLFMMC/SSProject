@@ -2,22 +2,58 @@
 <html>
 <head>
 	<title>Login</title>
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/main.css">
-	<script src="js/bootstrap.js"></script>
+	<link rel="stylesheet" href="static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="static/css/main.css">
+	<script src="static/js/jquery-1.10.2.js"></script>
+	<script src="static/js/topBar.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		setTopBar(); //
+	});
+
+
+	function register(){
+		var password;
+		if ($("#password1").val()==$("#password2").val()){
+			password=$("#password1").val();
+		}else{
+			alert("两次密码输入不一致");
+			return;
+		}
+		var username=$("#username").val();
+		var phone=$("#phone").val();
+
+		var jsonData = {
+			"serverCode": "userRegister",
+			"userName": username,
+			"password": password,
+			"phone":phone
+		}
+		$.ajax({
+			url : "./webAction",
+			type : 'POST',
+			dataType : 'text',
+			data : jsonData,
+			success:function(data) {
+				var jData = JSON.parse(data);
+				var serverMsg = jData.serverMsg;
+				alert(serverMsg); 
+				if(serverMsg=="success"){
+					registerOk()
+				}
+			}
+		});
+
+		function registerOk(){
+			window.localtion.href="userinfo.html";
+		}
+	}
+	</script>
 </head>
 <body>
 	<div class="container"> 
-		<div class="header clearfix">
-	        <nav>
-	          <ul class="nav nav-pills pull-right">
-	            <li role="presentation" class="active"><a href="#">Home</a></li>
-	            <li role="presentation"><a href="#">About</a></li>
-	            <li role="presentation"><a href="#">Contact</a></li>
-	          </ul>
-	        </nav>
-	        <h3 class="text-muted">XXX视频网站</h3>
-	 	</div>
+		 <div class="header clearfix" id="topBar">
+        </div>
 
 	
 		<div class="row">
@@ -32,42 +68,33 @@
 						  <div class="form-group">
 						    <label for="inputEmail3" class="col-sm-4 control-label">用户名</label>
 						    <div class="col-sm-8">
-						      <input type="text" class="form-control" id="inputEmail3">
+						      <input type="text" class="form-control" id="username">
 						    </div>
 						  </div>
 						   <div class="form-group">
 						    <label for="inputEmail3" class="col-sm-4 control-label">手机号码</label>
 						    <div class="col-sm-8">
-						      <input type="text" class="form-control" id="inputEmail3">
+						      <input type="text" class="form-control" id="phone">
 						    </div>
 						  </div>
 						  <div class="form-group">
 						    <label for="inputPassword3" class="col-sm-4 control-label">密码</label>
 						    <div class="col-sm-8">
-						      <input type="text" class="form-control" id="inputPassword3">
+						      <input type="text" class="form-control" id="password1">
 						    </div>
 						  </div>
 						   <div class="form-group">
 						    <label for="inputEmail3" class="col-sm-4 control-label">确认密码</label>
 						    <div class="col-sm-8">
-						      <input type="text" class="form-control" id="inputEmail3">
+						      <input type="text" class="form-control" id="password2">
 						    </div>
 						  </div>
-						   <div class="form-group">
-						    <label for="inputEmail3" class="col-sm-4 control-label">验证码</label>
-						    <a href=""><img src="" alt=""></a>
-						  </div>
-						   <div class="form-group">
-						    <label for="inputEmail3" class="col-sm-4 control-label">验证码</label>
-						    <div class="col-sm-8">
-						      <input type="text" class="form-control" id="inputEmail3">
-						    </div>
-						  </div>
+						  
 						  <div class="row">
 						  	<div class="col-md-6"></div>
 						  	<div class="col-md-6">
-						  		<a href="" class="btn btn-default" role="button">取消</a>
-						 		 <input type="submit" value="注册" class="btn btn-primary">
+						  		<a href="/" class="btn btn-default" role="button">取消</a>
+						 		 <input type="submit" value="注册" class="btn btn-primary" onclick="register()">
 						  	</div>
 						  </div>
 				    </form>
@@ -78,5 +105,7 @@
 		</div>
 	 	
  	</div>
+
+ 	
 </body>
 </html>
