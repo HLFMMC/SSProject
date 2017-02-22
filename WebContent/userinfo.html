@@ -19,12 +19,13 @@
 			url : "./webAction",
 			type : 'POST',
 			dataType : 'text',
+			async: false,
 			data : jsonData,
 			success:function(data) {
 				var jData = JSON.parse(data);
 				var serverMsg = jData.serverMsg;
 				if (serverMsg=="success"){
-					user=jData;
+					user=jData.data[0];
 				}else{
 					window.location.href="login.html"
 				}
@@ -44,8 +45,8 @@
  			
  			<div class="panel panel-default">
 			  <div class="panel-body" id="userInfo-left">
-			  <img src="img/1.jpg" alt="..." class="img-circle" width="50" height="50">
- 				<span>甩甩</span>
+			 <!--  <img src="img/1.jpg" alt="..." class="img-circle" width="50" height="50">
+ 				<span>甩甩</span> -->
  			<br />
  			<br />
 			    <a class="btn btn-default" href="#" role="button">个人设置</a>
@@ -68,8 +69,8 @@
  		<h4>个 人信息</h4>
  		<div class="row">
  			<div class="col-md-3">
-	 			<div class="thumbnail">
-			      <img src="img/1.jpg" alt="..." >
+	 			<div class="thumbnail" >
+			      <img id="rightUserImg" src="img/1.jpg" alt="..." >
 			      <div class="caption">
 			        <p><a href="#" class="btn btn-primary" role="button">修改头像</a> </p>
 			      </div>
@@ -103,65 +104,15 @@
 	 		
  		</div>
 
-			<div class="viewlist">
+			<div class="viewlist" >
 					<h4>观看记录</h4>
-				 	<div class="row">
-					  <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
-					   <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
-					   <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
-					    <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
-					    <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
+				 	<div class="row" id="myViewlist">
 					</div>
 			</div>
 
 			<div class="myshow">
 					<h4>我的收藏</h4>
-				 	<div class="row">
-					  <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
-					   <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
-					   <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
-					    <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
-					    <div class="col-xs-6 col-md-3">
-					    <a href="#" class="thumbnail">
-					      <img src="img/1.jpg" alt="...">
-					    </a>
-					  </div>
+				 	<div class="row" id="myCollectVideoList">
 					</div>
 			</div>
 
@@ -172,19 +123,19 @@
 				  <div class="form-group">
 				    <label for="inputEmail3" class="col-sm-3 control-label">视频名称</label>
 				    <div class="col-sm-9">
-				      <input type="text" class="form-control" id="inputEmail3">
+				      <input type="text" class="form-control" id="videoName">
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <label for="inputPassword3" class="col-sm-3 control-label">视频描述</label>
 				    <div class="col-sm-9">
-				      <input type="text" class="form-control" id="inputPassword3">
+				      <input type="text" class="form-control" id="videoDesc">
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <label for="inputPassword3" class="col-sm-3 control-label">选择分类</label>
 				    <div class="col-sm-9">
-				      <input type="text" class="form-control" id="inputPassword3">
+				      <input type="text" class="form-control" id="videoType">
 				    </div>
 				  </div>
 				  <div class="form-group">
@@ -200,6 +151,7 @@
 				       <input type="file" id="exampleInputFile">
 				    </div>
 				  </div>
+				   <input type="submit" value="保存" class="btn" id="saveVideo" >
 				</form>
 			</div>
 
@@ -210,10 +162,10 @@
 				  <div class="form-group">
 				    <label for="inputEmail3" class="col-sm-3 control-label">发布内容</label>
 				    <div class="col-sm-9">
-				      <input type="text" class="form-control" id="inputEmail3">
+				      <input type="text" class="form-control" id="xuanshang">
 				    </div>
 				  </div>
-				  <input type="submit" value="发布" class="btn">
+				  <input type="submit" value="发布" class="btn" id="pushXs">
 				</form>
 			</div>
  		</div>
@@ -224,13 +176,148 @@
 <script>
 	$(function(){
 
-	});
+		console.log("resuser: "+JSON.stringify(user));
+		userInfo();
+		viewlist();
+		mycollectVideo();
 
+
+		$("#saveVideo").click(function(){
+			console.log("onclick");
+			var videoname=$("#videoName").val();
+			var videoDesc=$("#videoDesc").val();
+			var videoType=$('#videoType').val();
+
+			console.log("videoname:"+videoname);
+			console.log("videoDesc:"+videoDesc);
+			console.log("videoType:"+videoType);
+
+			var jsonData = {
+			"serverCode" : "saveVideoUpload",
+			"videoName" : videoname,
+			"videoDesc" :videoDesc,
+			"pic" :"userPicPath/user_head.png",
+			"address" : "http://7u2qky.com1.z0.glb.clouddn.com/beijing.mp4",
+			"videoTypeId" : videoType
+			};
+
+			 $.ajax({
+				url : "./webAction",
+				type : 'POST',
+				dataType : 'text',
+				data : jsonData,
+				success:function(data) {
+					var jData = JSON.parse(data);
+					var serverMsg = jData.serverMsg;
+					alert(serverMsg=="success"?"保存成功":"失败");
+				}
+			});
+
+		});
+
+		$('#pushXs').click(function(){
+			var str=$('#xuanshang').val();
+			var jsonData = {
+				"serverCode" : "rewardAdd",
+				"content" : str, 
+				"money" : "1.0"
+			}
+			 $.ajax({
+				url : "./webAction",
+				type : 'POST',
+				dataType : 'text',
+				data : jsonData,
+				success:function(data) {
+					var jData = JSON.parse(data);
+					var serverMsg = jData.serverMsg;
+					alert(serverMsg=="success"?"发布成功":"失败");
+				}
+			});
+		});
+
+
+	});
+	
 	function userInfo(){
+		var str='<img src="'+user.pic+'" alt="..." class="img-circle" width="50" height="50">'
+ 			str+='<span>'+user.userName+'</span>'
+		$("#userInfo-left").append(str);
+		$("#rightUserImg").attr("src",user.pic);
+
+	}
+
+
 	
 
-			
+	function viewlist(){
+		var jsonData = {
+			"serverCode" : "myViewVideoList"
+			};
+
+		    $.ajax({
+				url : "./webAction",
+				type : 'POST',
+				dataType : 'text',
+				data : jsonData,
+				success:function(data) {
+					var jData = JSON.parse(data);
+					var serverMsg = jData.serverMsg;
+					if (serverMsg=="success"){
+						list(jData);
+					}else{
+						alert(serverMsg);
+					}
+					
+				}
+			});
+
+			function list(res){
+				for (var i = res.data.length - 1; i >= 0; i--) {
+					var str='<div class="col-xs-6 col-md-3">'
+					 	str+='<a href="#" class="thumbnail">'
+					    str+='<img src="'+res.data[i].videoPic+'" alt="...">'
+					    str+='</a></div>'
+					    $("#myViewlist").append(str); 
+				}
+			}		
 	}
+
+
+	function mycollectVideo(){
+		var jsonData = {
+			"serverCode" : "myCollectVideoList"
+			};
+
+		    $.ajax({
+				url : "./webAction",
+				type : 'POST',
+				dataType : 'text',
+				data : jsonData,
+				success:function(data) {
+					var jData = JSON.parse(data);
+					var serverMsg = jData.serverMsg;
+					if (serverMsg=="success"){
+						list(jData);
+					}else{
+						alert(serverMsg);
+					}
+					
+				}
+			});
+
+			function list(res){
+				for (var i = res.data.length - 1; i >= 0; i--) {
+					var str='<div class="col-xs-6 col-md-3">'
+					 	str+='<a href="#" class="thumbnail">'
+					    str+='<img src="'+res.data[i].videoPic+'" alt="...">'
+					    str+='</a></div>'
+					    $("#myCollectVideoList").append(str); 
+				}
+			}		
+	}
+
+
+	
 </script>
 </body>
 </html>

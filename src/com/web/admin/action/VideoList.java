@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import com.JSONListFormat;
 import com.db.SQLClient;
 import com.web.WebUtil;
@@ -15,6 +14,7 @@ import com.web.admin.db.VideoDB;
 
 public class VideoList {
 	public void doPost(HttpServletRequest req,HttpServletResponse resp) throws Exception {
+		System.out.println("video list");
 		String responseMessage = "";
 		
 		JSONListFormat  jsonFormat = WebUtil.createJSONListFormat(req, false);
