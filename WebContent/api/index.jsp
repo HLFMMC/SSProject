@@ -270,6 +270,15 @@ ul>li {
 		}
 		showAction(jsonData);
 	}
+	
+	 // 视频分类列表
+	function videoTypeList() {
+		var jsonData = {
+			"serverCode" : "videoTypeList"
+		}
+		showAction(jsonData);
+	}
+	
 </script>
 
 <div id="test"></div>
@@ -314,6 +323,8 @@ ul>li {
 				<div class="panel-heading">Video</div>
 				<ul class="list-group">
 					<li class="list-group-item"><a href="javascript:videoList()">视频列表videoList </a></li>
+					<li class="list-group-item"><a href="javascript:videoTypeList()">视频分类列表videoTypeList </a></li>
+					
 					<li class="list-group-item"><a href="javascript:saveVideoUpload()">保存视频saveVideoUpload </a></li>
 					<li class="list-group-item"><a href="javascript:uploadVideoPic()">上传视频封面uploadVideoPic </a></li>
 					<li class="list-group-item"><a href="javascript:uploadVideo()">上传视频uploadVideo </a></li>

@@ -88,6 +88,7 @@ public class WebAction extends HttpServlet {
 			else if(   "myVideoList".equals(serverCode)){new MyVideoList().doPost(req, resp);}
 			else if(   "myViewVideoList".equals(serverCode)){new MyViewVideoList().doPost(req, resp);}
 			else if(   "myViewVideoAdd".equals(serverCode)){new MyViewVideoAdd().doPost(req, resp);}
+			else if(   "videoTypeList".equals(serverCode)){new VideoTypeList().doPost(req, resp);}
 			else if(   "videoList".equals(serverCode)){new VideoList().doPost(req, resp);}
 			else if(   "saveVideoUpload".equals(serverCode)){new SaveVideoUpload().doPost(req, resp);}
 			else if(   "uploadVideoPic".equals(serverCode)){new UploadVideoPic().doPost(req, resp);}

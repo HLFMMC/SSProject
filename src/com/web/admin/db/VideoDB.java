@@ -354,4 +354,21 @@ public class VideoDB {
 		
 		return sqlClient.execUpdate(sql.toString());
 	}
+
+
+	/*
+	 * 视频分类列表
+	 */
+	public LinkedList<HashMap<String, String>> findVideoTypeList() throws Exception {
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT  ");
+		sql.append("   ss.VideoType.ID AS videoTypeId,  ");
+		sql.append("   ss.VideoType.`Name` AS videoTypeName  ");
+		sql.append(" FROM  ");
+		sql.append("   ss.VideoType  ");
+		sql.append(" WHERE  ");
+		sql.append("   ss.VideoType.ID >1  ");
+
+		return sqlClient.execQuery(sql.toString());
+	}
 }
