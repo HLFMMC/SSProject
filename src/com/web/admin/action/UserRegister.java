@@ -22,12 +22,15 @@ public class UserRegister {
 		
 		String userName = req.getParameter("userName");
 		String password = req.getParameter("password");
+		String phone = req.getParameter("phone");
 		System.out.println(userName);
 		if(CheckUtil.isEmpty(userName)) {
 			responseMessage = "error-userName"; 
 		} else if(!CheckUtil.isPassword(password)) {
 			responseMessage = "error-password";
-		} 
+		} else if(!CheckUtil.isActionPhone(phone)) {
+			responseMessage = "error-phone";
+		}
 		
 		SQLClient sqlClient = new SQLClient();
 		ManagerDB managerDB = new ManagerDB(sqlClient);
@@ -37,14 +40,17 @@ public class UserRegister {
 			if(data.size()>0) {
 				responseMessage = "error-repeat";
 			} else {
-				managerDB.UserRegister(userName, password);
+				managerDB.UserRegister(userName, password,phone);
 			}
 		}
 		
 		if(responseMessage == "") {
 			responseMessage = "success";
 		} else {
-			if(responseMessage.equals("error-repeat"));jsonFormat.setShowMsg("用户名已被使用");
+			if(responseMessage.equals("error-userName")) jsonFormat.setShowMsg("用户名错误");
+			if(responseMessage.equals("error-password")) jsonFormat.setShowMsg("密码格式错误");
+			if(responseMessage.equals("error-phone")) jsonFormat.setShowMsg("电话号码格式错误");
+			if(responseMessage.equals("error-repeat")) jsonFormat.setShowMsg("用户名已被使用");
 		}
 		
 		jsonFormat.setServerMsg(responseMessage);

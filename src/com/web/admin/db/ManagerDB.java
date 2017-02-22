@@ -67,21 +67,24 @@ public class ManagerDB {
 	 * @return
 	 * @throws Exception
 	 */
-	public int  UserRegister(String userName, String password) throws Exception {
+	public int  UserRegister(String userName, String password,String phone) throws Exception {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" INSERT INTO  ");
 		sql.append("   ss.Manage  ");
 		sql.append("   ( ");
 		sql.append("   ss.Manage.UserName,  ");
-		sql.append("   ss.Manage.`Password`  ");
+		sql.append("   ss.Manage.`Password`,  ");
+		sql.append("   ss.Manage.Phone  ");
 		sql.append("   )  ");
 		sql.append("   VALUES  ");
 		sql.append("   (   ");
+		sql.append("   ?,  ");
 		sql.append("   ?,  ");
 		sql.append("   ?  ");
 		sql.append("   )  ");
 		sqlClient.addParameter(userName);
 		sqlClient.addParameter(password);
+		sqlClient.addParameter(phone);
 		
 		return sqlClient.execUpdate(sql.toString());
 	}

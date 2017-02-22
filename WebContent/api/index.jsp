@@ -130,7 +130,8 @@ ul>li {
 		var jsonData = {
 			"serverCode" : "userRegister",
 			"userName" : "",
-			"password" : ""
+			"password" : "",
+			"phone" : ""
 		}
 		showAction(jsonData);
 	}
