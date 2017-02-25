@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
 	<title></title>
 	<link rel="stylesheet" href="static/css/bootstrap.min.css">
 	<link rel="stylesheet" href="static/css/main.css">
@@ -10,7 +11,6 @@
 	$(document).ready(function() {
 		setTopBar(); //
 	});
-
 	var user;
 	var jsonData = {
 			"serverCode" : "userInfo"
@@ -118,7 +118,7 @@
 
 			<div class="upload">
 				<h4>上传视频</h4>
-				<hr ／>
+				<hr/>
 				<form class="form-horizontal">
 				  <div class="form-group">
 				    <label for="inputEmail3" class="col-sm-3 control-label">视频名称</label>
@@ -135,23 +135,28 @@
 				  <div class="form-group">
 				    <label for="inputPassword3" class="col-sm-3 control-label">选择分类</label>
 				    <div class="col-sm-9">
-				      <input type="text" class="form-control" id="videoType">
+				      <select id="category">
+				      </select>
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <label for="exampleInputFile"  class="col-sm-3 control-label">上传封面图片</label>
 				     <div class="col-sm-9">
-				       <input type="file" id="exampleInputFile">
+				       <input type="text" id="videoPic" disabled="disabled">
+				       <button type="button" onclick="chickPic(this)">选择文件</button>
+				       <input type="file"  style="display:none;" onchange="uploadPic(this)">
 				    </div>
 				   
 				  </div>
 				 <div class="form-group">
 				    <label for="exampleInputFile"  class="col-sm-3 control-label">上传视频</label>
 				     <div class="col-sm-9">
-				       <input type="file" id="exampleInputFile">
+				       <input type="text" id="videofile" disabled="disabled">
+				       <button type="button" onclick="chickVideo(this)">选择文件</button>
+				       <input type="file" style="display:none;" onchange="uploadVideo(this)">
 				    </div>
 				  </div>
-				   <input type="submit" value="保存" class="btn" id="saveVideo" >
+				   <input type="button" value="保存" class="btn" id="saveVideo" >
 				</form>
 			</div>
 
@@ -165,7 +170,13 @@
 				      <input type="text" class="form-control" id="xuanshang">
 				    </div>
 				  </div>
-				  <input type="submit" value="发布" class="btn" id="pushXs">
+				  <div class="form-group">
+				    <label for="inputEmail3" class="col-sm-3 control-label">Money</label>
+				    <div class="col-sm-9">
+				      <input type="text" class="form-control" id="Money">
+				    </div>
+				  </div>
+				  <input type="button" value="发布" class="btn" id="pushXs">
 				</form>
 			</div>
  		</div>
@@ -173,34 +184,117 @@
 </div>
 
 
-<script>
-	$(function(){
 
+<script>
+function chickPic(id) {
+	$(id).next().click();
+}
+function chickVideo(id) {
+	$(id).next().click();
+}
+
+function uploadPic(id){
+	alert("23")
+	var file = id.files[0];
+	  var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function() {
+    	 var jsonData= {
+    		"serverCode": "uploadUserPic",
+    		"base64": this.result
+    	 }
+    	 $.ajax({
+ 			url : "webAction",
+ 			type : 'POST',
+ 			dataType : 'text',
+ 			data : jsonData,
+ 			success:function(data) {
+ 				var jData = JSON.parse(data);
+ 				var serverMsg = jData.serverMsg;
+ 				if(serverMsg == "success") {
+ 					$(id).prev().prev().val(jData.data[0].path)
+ 				}
+ 				else {
+ 					alert("上传失败")
+ 				}
+ 			}
+ 		});
+      }
+}
+      function uploadVideo(id){
+    		var file = id.files[0];
+    		  var reader = new FileReader();
+    	      reader.readAsDataURL(file);
+    	      reader.onload = function() {
+    	    	 var jsonData= {
+    	    		"serverCode": "uploadVideo",
+    	    		"base64": this.result
+    	    	 }
+    	    	 $.ajax({
+    	 			url : "webAction",
+    	 			type : 'POST',
+    	 			dataType : 'text',
+    	 			data : jsonData,
+    	 			success:function(data) {
+    	 				var jData = JSON.parse(data);
+    	 				var serverMsg = jData.serverMsg;
+    	 				if(serverMsg == "success") {
+    	 					$(id).prev().prev().val(jData.data[0].path)
+    	 				}
+    	 			}
+    	 		});
+    	      }
+}
+	function category() {
+		var jsonData = {
+			"serverCode": "videoTypeList"
+		}
+		$.ajax({
+			url : "webAction",
+			type : 'POST',
+			dataType : 'text',
+			data : jsonData,
+			success:function(data) {
+				var jData = JSON.parse(data);
+				var serverMsg = jData.serverMsg;
+				if(serverMsg == "success") {
+					var jData = JSON.parse(data);
+					var serverMsg = jData.serverMsg;
+					if(serverMsg == "success"){
+						var htmlStr = ""
+						for(var i in jData.data) {
+							htmlStr += "<option value='"+jData.data[i].videoTypeId+"'>"+jData.data[i].videoTypeName+"</option>";
+						}
+						$("#category").html(htmlStr)
+					}
+				}
+			}
+		});
+	}
+	$(function(){
 		console.log("resuser: "+JSON.stringify(user));
 		userInfo();
 		viewlist();
+		category();
 		mycollectVideo();
-
-
 		$("#saveVideo").click(function(){
 			console.log("onclick");
 			var videoname=$("#videoName").val();
 			var videoDesc=$("#videoDesc").val();
-			var videoType=$('#videoType').val();
-
+			var videoType=$("#category")[0].value;
+			var videoPic = $("#videoPic").val()
+			var videofile = $("#videofile").val()
 			console.log("videoname:"+videoname);
 			console.log("videoDesc:"+videoDesc);
 			console.log("videoType:"+videoType);
-
 			var jsonData = {
 			"serverCode" : "saveVideoUpload",
 			"videoName" : videoname,
 			"videoDesc" :videoDesc,
-			"pic" :"userPicPath/user_head.png",
-			"address" : "http://7u2qky.com1.z0.glb.clouddn.com/beijing.mp4",
+			"pic" :videoPic,
+			"address" : videofile,
 			"videoTypeId" : videoType
 			};
-
 			 $.ajax({
 				url : "./webAction",
 				type : 'POST',
@@ -212,9 +306,7 @@
 					alert(serverMsg=="success"?"保存成功":"失败");
 				}
 			});
-
 		});
-
 		$('#pushXs').click(function(){
 			var str=$('#xuanshang').val();
 			var jsonData = {
@@ -223,7 +315,7 @@
 				"money" : "1.0"
 			}
 			 $.ajax({
-				url : "./webAction",
+				url : "webAction",
 				type : 'POST',
 				dataType : 'text',
 				data : jsonData,
@@ -234,8 +326,6 @@
 				}
 			});
 		});
-
-
 	});
 	
 	function userInfo(){
@@ -243,17 +333,12 @@
  			str+='<span>'+user.userName+'</span>'
 		$("#userInfo-left").append(str);
 		$("#rightUserImg").attr("src",user.pic);
-
 	}
-
-
 	
-
 	function viewlist(){
 		var jsonData = {
 			"serverCode" : "myViewVideoList"
 			};
-
 		    $.ajax({
 				url : "./webAction",
 				type : 'POST',
@@ -270,7 +355,6 @@
 					
 				}
 			});
-
 			function list(res){
 				for (var i = res.data.length - 1; i >= 0; i--) {
 					var str='<div class="col-xs-6 col-md-3">'
@@ -281,13 +365,10 @@
 				}
 			}		
 	}
-
-
 	function mycollectVideo(){
 		var jsonData = {
 			"serverCode" : "myCollectVideoList"
 			};
-
 		    $.ajax({
 				url : "./webAction",
 				type : 'POST',
@@ -304,7 +385,6 @@
 					
 				}
 			});
-
 			function list(res){
 				for (var i = res.data.length - 1; i >= 0; i--) {
 					var str='<div class="col-xs-6 col-md-3">'
@@ -315,8 +395,6 @@
 				}
 			}		
 	}
-
-
 	
 </script>
 </body>

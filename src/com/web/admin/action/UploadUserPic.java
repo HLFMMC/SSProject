@@ -13,10 +13,8 @@ import javax.servlet.http.HttpSession;
 import com.Base64Util;
 import com.CheckUtil;
 import com.JSONListFormat;
-import com.db.SQLClient;
 import com.web.WebUtil;
 import com.web.admin.User;
-import com.web.admin.db.ManagerDB;
 
 public class UploadUserPic {
 	
@@ -39,7 +37,7 @@ public class UploadUserPic {
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssms");
 			String str = sdf.format(date);
-			String basePathUrl = "139.199.160.234:9090/lxw/";
+			String basePathUrl = req.getSession().getServletContext().getRealPath("/");
 			String pathUrl = "userPicPath/";
 			String url = str + ".jpg";
 			

@@ -1,11 +1,16 @@
 package com.web.admin.action;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.Base64Util;
 import com.CheckUtil;
 import com.JSONListFormat;
 import com.db.SQLClient;
@@ -21,25 +26,38 @@ public class UploadVideo {
 		JSONListFormat  jsonFormat = WebUtil.createJSONListFormat(req, false);
 		HttpSession session = req.getSession();
 		User user = (User) session.getAttribute("user");
-		
-		
-		String phone = req.getParameter("phone");
-		String pic = req.getParameter("pic");
-		String nikeName = req.getParameter("nikeName");
-		String email = req.getParameter("email");
-		String sex = req.getParameter("sex");
 		if(user == null) {
 			responseMessage = "error-login";
-		} else if(CheckUtil.isNotEmpty(email)){
-			if(!CheckUtil.isMail(email)){
-				responseMessage = "error-email";
-			}
 		}
+		String base64 = req.getParameter("base64");
 		
-		SQLClient sqlClient = new SQLClient();
-		ManagerDB managerDB = new ManagerDB(sqlClient);
 		if(responseMessage == "") {
-			managerDB.UserUpdate(phone, pic,nikeName,email,sex,user.getUserId());
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssms");
+			String str = sdf.format(date);
+			String basePathUrl = req.getSession().getServletContext().getRealPath("/");
+			String pathUrl = "videoPath/";
+			String url = str + ".mp4";
+			
+			File pathFile = new File(pathUrl);
+			if  (!pathFile.exists()  && !pathFile.isDirectory()){       
+				pathFile.mkdirs();
+			}
+			File file = new File(basePathUrl+pathUrl + url);
+			
+			if  (!file.exists()  && !file.isDirectory()){       
+				file.createNewFile();   
+			}
+			
+			boolean result = Base64Util.base64ToFile(base64, file);
+			
+			if(result){
+				HashMap<String, String> map = new HashMap<String, String>();
+				map.put("path", basePathUrl+pathUrl+url);
+				jsonFormat.addMap(map);
+			}else{
+				responseMessage="error";
+			}
 		}
 		
 		if(responseMessage == "") {
